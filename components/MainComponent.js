@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import Directory from './DirectoryComponent';
-import { CAMPSITES, Campsites } from '../shared/campsites';
+import CampsiteInfo from './CampsiteInfoComponent';
 import { View, Platform } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
-import ExpoStatusBar from 'expo-status-bar/build/ExpoStatusBar';
 
 
 const DirectoryNavigator = createStackNavigator(
