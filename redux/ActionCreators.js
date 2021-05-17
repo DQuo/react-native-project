@@ -1,5 +1,5 @@
 import * as ActionTypes from './ActionTypes';
-import { baseUrl } from './shared/baseUrl';
+import { baseUrl } from '../shared/baseUrl';
 
 
 // COMMENT FUNCTIONS
@@ -145,7 +145,7 @@ export const fetchPartners = () => (dispatch) => {
       })
       .then((response) => response.json())
       .then((partners) => dispatch(addPartners(partners)))
-      .then((error) => dispatch(partnersFailed(error.message)))
+      .catch((error) => dispatch(partnersFailed(error.message)))
   );
 };
 
