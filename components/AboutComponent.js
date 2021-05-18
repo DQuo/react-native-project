@@ -4,6 +4,7 @@ import { Card, ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native-gesture-handler';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import Loading from './LoadingComponent';
 
 
 // Redux: State to Props
@@ -28,7 +29,7 @@ function Mission() {
 }
 
 
-// Primary Component: <About />
+// Primary Export Component: <About />
 
 class About extends Component {
 
@@ -45,6 +46,28 @@ class About extends Component {
         />
       );
     };
+
+    if (this.props.partners.isLoading) {
+      return (
+        <ScrollView>
+          <Mission />
+          <Card title="Community Partners">
+            <Loading />
+          </Card>
+        </ScrollView>
+      )
+    }
+
+    if (this.props.partners.errMess) {
+      return (
+        <ScrollView>
+          <Mission />
+          <Card title="Community Partners">
+            <Text>{this.props.partners.errMess}</Text>
+          </Card>
+        </ScrollView>
+      )
+    }
 
     return (
       <ScrollView>
