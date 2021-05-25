@@ -1,6 +1,6 @@
 // IMPORTS: React Core
 import React, { Component } from 'react';
-import { FlatList, View, Text, StyleSheet } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Alert } from 'react-native';
 
 // IMPORTS: React Packages
 import { ListItem } from 'react-native-elements';
@@ -14,13 +14,16 @@ import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
 
+//--------------------------------------------------------------
+
+
 // REDUX: Dispatch to Props
 const mapDispatchToProps = {
   deleteFavorite: (campsiteId) => deleteFavorite(campsiteId)
 }
 
-// REDUX: State to Props
 
+// REDUX: State to Props
 const mapStateToProps = (state) => {
   return (
     {
@@ -30,6 +33,8 @@ const mapStateToProps = (state) => {
   );
 };
 
+
+//---------------------------------------------------------------
 
 // Export Component: <Favorites />
 
@@ -47,22 +52,44 @@ class Favorites extends Component {
       return (
         <SwipeRow rightOpenValue={-100} style={styles.swipeRow}>
 
-          <View style={styles.deleteView}>
-            <TouchableOpacity style={styles.deleteTouchable} onPress={() => this.props.deleteFavorite(item.id)}>
-              <Text style={styles.deleteText}>
-                Delete
-              </Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.deleteView}>
+              <TouchableOpacity 
+                style={styles.deleteTouchable} 
+                onPress={() => {
+                  return (
+                    Alert.alert(
+                      'Delete Favorite?', 
+                      'Are you sure you wish to delete the favorite campsite ' + item.name + '?',
+                      [
+                        {
+                          text: 'Cancel',
+                          onPress: () => console.log(item.name + 'Not Deleted'),
+                          style: 'cancel'
+                        },
+                        {
+                          text: 'OK',
+                          onPress: () => this.props.deleteFavorite(item.id)
+                        }
+                      ],
+                      { cancelable: false }
+                    )
+                  );
+                }}
+              >
+                <Text style={styles.deleteText}>
+                  Delete
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-          <View>
-            <ListItem 
-              title={item.name}
-              subtitle={item.description}
-              leftAvatar={ {source: {uri: baseUrl + item.image}} }
-              onPress={() => navigate('CampsiteInfo', {campsiteId: item.id})}
-            />
-          </View>
+            <View>
+              <ListItem 
+                title={item.name}
+                subtitle={item.description}
+                leftAvatar={ {source: {uri: baseUrl + item.image}} }
+                onPress={() => navigate('CampsiteInfo', {campsiteId: item.id})}
+              />
+            </View>
 
         </SwipeRow>
       );
