@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
 }
 
 
-// Primary Component: <Directory />
+// Exported Component: <Directory />
 
 class Directory extends Component {
 

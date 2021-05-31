@@ -1,6 +1,4 @@
-
 // Imports
-
 import React, { Component } from 'react';
 import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
@@ -11,7 +9,6 @@ import * as Animatable from 'react-native-animatable';
 
 
 // Redux: State To Props
-
 const mapStateToProps = (state) => {
   return (
     {
@@ -24,7 +21,6 @@ const mapStateToProps = (state) => {
 
 
 // Redux: Dispatch To Props
-
 const mapDispatchToProps = {
   postFavorite: (campsiteId) => (postFavorite(campsiteId)),
   postComment: (campsiteId, rating, author, text) => (postComment(campsiteId, rating, author, text))
@@ -32,7 +28,6 @@ const mapDispatchToProps = {
 
 
 // Local Component: <RenderCampsite />
-
 function RenderCampsite(props) {
 
   const {campsite} = props;
@@ -40,6 +35,8 @@ function RenderCampsite(props) {
   const view = React.createRef();
 
   const recognizeDrag = ({dx}) => (dx < -200) ? true : false ;
+
+  const recognizeComment = ({dx}) => (dx > 200) ? true: false ;
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -66,6 +63,8 @@ function RenderCampsite(props) {
           ],
           { cancelable: false }
         );
+      } else if (recognizeComment(gestureState)) {
+        props.onShowModal();
       }
       return true;
     }
