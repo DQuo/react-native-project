@@ -1,11 +1,12 @@
 // IMPORTS: React, React Native
 import React, { Component } from 'react';
-import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
+import { View, Platform, StyleSheet, Text, ScrollView, Image, Alert, ToastAndroid } from 'react-native';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import { createAppContainer } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
+import NetInfo from '@react-native-community/netinfo';
 
 // IMPORTS: Redux 
 import { connect } from 'react-redux';
@@ -341,15 +342,70 @@ class Main extends Component {
     this.props.fetchComments();
     this.props.fetchPromotions();
     this.props.fetchPartners();
+
+    this.showNetInfo();
+
+    this.unsubscribeNetInfo = NetInfo.addEventListener((connectionInfo) => {
+      this.handleConnectivityChange(connectionInfo);
+    });
+
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeNetInfo();
+  } 
+
+  showNetInfo = async () => {
+    try {
+      const netInfo = await NetInfo.fetch();
+
+      if (Platform.OS === 'ios') {
+        Alert.alert('Initial Network Connectivity Type:', netInfo.type);
+      } 
+      else {
+        ToastAndroid.show('Initial Network Connectivity Type: ' + netInfo.type, ToastAndroid.LONG);
+      }
+    } 
+    catch (e) {
+      console.log(e);
+    }
+    
+  };
+
+  handleConnectivityChange = (connectionInfo) => {
+    let connectionMsg = 'You are now connected to an active network';
+
+    switch (connectionInfo.type) {
+      case 'none':
+        connectionMsg = 'No network connection is active.';
+        break;
+      case 'unknown':
+        connectionMsg = 'The network connection state is now unknown.';
+        break;
+      case 'cellular':
+        connectionMsg = 'You are now connected to a cellular network.';
+        break;
+      case 'wifi':
+        connectionMsg = 'You are now connected to a Wifi network.';
+        break;
+    }
+
+    if (Platform.OS === 'ios') {
+      Alert.alert('Connection change:', connectionMsg)
+    }
+    else {
+      ToastAndroid.show(connectionMsg, ToastAndroid.LONG);
+    }
   }
 
   render() {
+
     return (
-        <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Expo.Constants.statusBarHeight }}>
-          <AppNavigator />
-        </View>
-        );
-    }
+      <View style={{ flex: 1, paddingTop: Platform.OS === 'ios' ? 0 : Expo.Constants.statusBarHeight }}>
+        <AppNavigator />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
